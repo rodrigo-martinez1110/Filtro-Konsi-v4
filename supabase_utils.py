@@ -91,6 +91,7 @@ def salvar_configuracao_no_supabase(params_gerais: dict, configs_banco: list):
                 "usa_margem_seguranca": config.get('usa_margem_seguranca'),
                 "modo_margem_seguranca": config.get('modo_margem_seguranca'),
                 "valor_margem_seguranca": config.get('valor_margem_seguranca'),
+                "taxa_juros_nominal": config.get('taxa_juros_nominal'),
 
                 # --- JSON de Auditoria ---
                 "params_gerais_json": params_serializados

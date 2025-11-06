@@ -47,6 +47,7 @@ if st.button("Consultar Histórico", use_container_width=True, type="primary"):
                 'coeficiente',
                 'comissao',
                 'parcelas',
+                'taxa_juros_nominal',
                 'coeficiente_parcela',
                 'margem_minima_cartao',
                 'usa_margem_seguranca',

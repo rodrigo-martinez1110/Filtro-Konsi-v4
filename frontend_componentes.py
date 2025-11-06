@@ -268,6 +268,24 @@ def exibir_configuracoes_banco(tipo_campanha: str, convenio: str, df: pd.DataFra
                     config["comissao"] = st.number_input("Comissão (%):", min_value=0.0, max_value=100.0, step=0.01, key=f"comissao_{i}")
                     config["parcelas"] = st.number_input("Parcelas:", min_value=1, max_value=200, step=1, key=f"parcelas_{i}")
 
+
+                    label_taxa = "Taxa de Juros Nominal (%):"
+                    if tipo_produto == 'Benefício':
+                        label_taxa = "Taxa Juros Benefício (%):"
+                    elif tipo_produto == 'Consignado': # "Consignado" é o nome no radio button para "Cartão"
+                        label_taxa = "Taxa Juros Cartão (%):"
+                    elif tipo_produto == 'Novo':
+                        label_taxa = "Taxa Juros Empréstimo (%):"
+                    config["taxa_juros_nominal"] = st.number_input(
+                        label_taxa, 
+                        min_value=0.0, 
+                        max_value=100.0, 
+                        step=0.01, 
+                        format="%.2f", 
+                        key=f"taxa_juros_{i}"
+                    )
+
+
                     coef_str = st.text_input("Coeficiente da Parcela:", "1.0", key=f"coef_parcela_{i}").replace(",", ".")
                     config["coeficiente_parcela"] = float(coef_str) if coef_str else 1.0
 

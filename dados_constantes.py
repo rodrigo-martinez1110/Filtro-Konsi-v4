@@ -51,5 +51,6 @@ ORDEM_COLUNAS_FINAL = [
     'valor_parcela_emprestimo', 'valor_parcela_beneficio', 'valor_parcela_cartao',
     'banco_emprestimo', 'banco_beneficio', 'banco_cartao',
     'prazo_emprestimo', 'prazo_beneficio', 'prazo_cartao',
+    'taxa_juros_emprestimo', 'taxa_juros_beneficio', 'taxa_juros_cartao',
     'Campanha'
 ]
