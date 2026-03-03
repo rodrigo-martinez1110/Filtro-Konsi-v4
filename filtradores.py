@@ -272,12 +272,20 @@ def _preprocessar_base(df: pd.DataFrame, params: dict) -> pd.DataFrame:
 def govsp_novo(base: pd.DataFrame, params: dict, config: dict) -> pd.DataFrame:
     try:
         base_calc = base.copy()
-        if 'MG_Emprestimo_Disponivel' in base_calc.columns:
+        if 'MG_Emprestimo_Disponivel' in base_calc.columns and 'Matricula' in base_calc.columns:
             base_calc['MG_Emprestimo_Disponivel'] = pd.to_numeric(base_calc['MG_Emprestimo_Disponivel'], errors='coerce')
+
+            # Identificar todas as matriculas unicas que possuem a margem de emprestimo disponivel negativa
+            matriculas_negativas = base_calc.loc[base_calc['MG_Emprestimo_Disponivel'] < 0, 'Matricula'].dropna().unique()
+
+            # Remover da base todas as linhas que pertencem a essas matriculas negativas
+            base_filtrada = base_calc.loc[~base_calc['Matricula'].isin(matriculas_negativas)]
+            
             base_filtrada = base_calc.loc[(base_calc['MG_Emprestimo_Disponivel'] >= 0).fillna(False)]
         else:
-            st.warning("GOVSP Novo: Coluna 'MG_Emprestimo_Disponivel' não encontrada.")
+            st.warning("GOVSP Novo: Coluna 'MG_Emprestimo_Disponivel' ou 'Matricula' não encontrada.")
             base_filtrada = base_calc
+            
         return _aplicar_regras_emprestimo(base_filtrada, config)
     except Exception as e:
         st.error(f"Erro em govsp_novo: {e}")
