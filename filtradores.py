@@ -279,9 +279,7 @@ def govsp_novo(base: pd.DataFrame, params: dict, config: dict) -> pd.DataFrame:
             matriculas_negativas = base_calc.loc[base_calc['MG_Emprestimo_Disponivel'] < 0, 'Matricula'].dropna().unique()
 
             # Remover da base todas as linhas que pertencem a essas matriculas negativas
-            base_filtrada = base_calc.loc[~base_calc['Matricula'].isin(matriculas_negativas)]
-            
-            base_filtrada = base_calc.loc[(base_calc['MG_Emprestimo_Disponivel'] >= 0).fillna(False)]
+            base_filtrada = base_calc.loc[~base_calc['Matricula'].isin(matriculas_negativas)] 
         else:
             st.warning("GOVSP Novo: Coluna 'MG_Emprestimo_Disponivel' ou 'Matricula' não encontrada.")
             base_filtrada = base_calc
