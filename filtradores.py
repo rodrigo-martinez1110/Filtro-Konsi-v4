@@ -189,48 +189,6 @@ def _preprocessar_base(df: pd.DataFrame, params: dict) -> pd.DataFrame:
         st.error(f"Erro na limpeza de Nome/CPF: {e}")
         return pd.DataFrame()
 
-    try:
-        if 'Lotacao' in base.columns:
-            selecao_lotacao_exata = params.get('selecao_lotacao', [])
-            if selecao_lotacao_exata:
-                base = base[~base['Lotacao'].astype(str).isin(selecao_lotacao_exata)]
-            selecao_lotacao_palavras = params.get('selecao_lotacao_palavras', [])
-            if selecao_lotacao_palavras:
-                lotacao_regex = '|'.join([re.escape(str(p)) for p in selecao_lotacao_palavras if str(p)])
-                if lotacao_regex:
-                    mascara_lotacao = base['Lotacao'].astype(str).str.contains(lotacao_regex, case=False, na=False, regex=True)
-                    base = base[~mascara_lotacao]
-
-        if 'Vinculo_Servidor' in base.columns:
-            selecao_vinculos_exatos = params.get('selecao_vinculos', [])
-            if selecao_vinculos_exatos:
-                base = base[~base['Vinculo_Servidor'].astype(str).isin(selecao_vinculos_exatos)]
-            selecao_vinculos_palavras = params.get('selecao_vinculos_palavras', [])
-            if selecao_vinculos_palavras:
-                vinculo_regex = '|'.join([re.escape(str(p)) for p in selecao_vinculos_palavras if str(p)])
-                if vinculo_regex:
-                    mascara_vinculo = base['Vinculo_Servidor'].astype(str).str.contains(vinculo_regex, case=False, na=False, regex=True)
-                    base = base[~mascara_vinculo]
-    except Exception as e:
-        st.error(f"Erro nos filtros de exclusão: {e}")
-        return pd.DataFrame()
-
-    if 'Data_Nascimento' in base.columns and not base['Data_Nascimento'].isna().all():
-        data_limite_idade_obj = params.get('data_limite_idade')
-        if data_limite_idade_obj:
-            try:
-                datas_nascimento = pd.to_datetime(base["Data_Nascimento"], dayfirst=True, errors='coerce')
-                mask_falha1 = datas_nascimento.isna()
-                if mask_falha1.any():
-                        datas_nascimento.loc[mask_falha1] = pd.to_datetime(base.loc[mask_falha1, "Data_Nascimento"], dayfirst=True, errors='coerce', format='%d/%m/%Y')
-                
-                data_limite_dt64 = pd.Timestamp(data_limite_idade_obj)
-                base = base[(~datas_nascimento.isna()) & (datas_nascimento >= data_limite_dt64)]
-            except Exception as e:
-                st.error(f"Erro ao aplicar filtro de idade: {e}. Verifique formatos em 'Data_Nascimento'.")
-
-    
-
     
     base['tratado'] = False
     base['tratado_beneficio'] = False
@@ -536,6 +494,47 @@ def _finalizar_base(df: pd.DataFrame, params: dict) -> pd.DataFrame:
         return pd.DataFrame()
         
     base = df.copy()
+
+    try:
+        if 'Lotacao' in base.columns:
+            selecao_lotacao_exata = params.get('selecao_lotacao', [])
+            if selecao_lotacao_exata:
+                base = base[~base['Lotacao'].astype(str).isin(selecao_lotacao_exata)]
+            selecao_lotacao_palavras = params.get('selecao_lotacao_palavras', [])
+            if selecao_lotacao_palavras:
+                lotacao_regex = '|'.join([re.escape(str(p)) for p in selecao_lotacao_palavras if str(p)])
+                if lotacao_regex:
+                    mascara_lotacao = base['Lotacao'].astype(str).str.contains(lotacao_regex, case=False, na=False, regex=True)
+                    base = base[~mascara_lotacao]
+
+        if 'Vinculo_Servidor' in base.columns:
+            selecao_vinculos_exatos = params.get('selecao_vinculos', [])
+            if selecao_vinculos_exatos:
+                base = base[~base['Vinculo_Servidor'].astype(str).isin(selecao_vinculos_exatos)]
+            selecao_vinculos_palavras = params.get('selecao_vinculos_palavras', [])
+            if selecao_vinculos_palavras:
+                vinculo_regex = '|'.join([re.escape(str(p)) for p in selecao_vinculos_palavras if str(p)])
+                if vinculo_regex:
+                    mascara_vinculo = base['Vinculo_Servidor'].astype(str).str.contains(vinculo_regex, case=False, na=False, regex=True)
+                    base = base[~mascara_vinculo]
+    except Exception as e:
+        st.error(f"Erro nos filtros de exclusão: {e}")
+        return pd.DataFrame()
+
+    if 'Data_Nascimento' in base.columns and not base['Data_Nascimento'].isna().all():
+        data_limite_idade_obj = params.get('data_limite_idade')
+        if data_limite_idade_obj:
+            try:
+                datas_nascimento = pd.to_datetime(base["Data_Nascimento"], dayfirst=True, errors='coerce')
+                mask_falha1 = datas_nascimento.isna()
+                if mask_falha1.any():
+                        datas_nascimento.loc[mask_falha1] = pd.to_datetime(base.loc[mask_falha1, "Data_Nascimento"], dayfirst=True, errors='coerce', format='%d/%m/%Y')
+                
+                data_limite_dt64 = pd.Timestamp(data_limite_idade_obj)
+                base = base[(~datas_nascimento.isna()) & (datas_nascimento >= data_limite_dt64)]
+            except Exception as e:
+                st.error(f"Erro ao aplicar filtro de idade: {e}. Verifique formatos em 'Data_Nascimento'.")
+
     
     # Garante colunas de valor/comissão
     for prod in ['emprestimo', 'beneficio', 'cartao']:
