@@ -204,7 +204,7 @@ def _preprocessar_base(df: pd.DataFrame, params: dict) -> pd.DataFrame:
         if col_co not in base.columns: base[col_co] = 0.0
         if col_ba not in base.columns: base[col_ba] = ''
         if col_pr not in base.columns: base[col_pr] = 0
-        col_tj = f'taxa_juros_{prod}'
+        col_tj = f'taxa_nominal_{prod}'
 
         if col_vl not in base.columns: base[col_vl] = 0.0
         if col_vp not in base.columns: base[col_vp] = 0.0
@@ -366,7 +366,7 @@ def _aplicar_regras_emprestimo(base: pd.DataFrame, config: dict) -> pd.DataFrame
             base_calc.loc[indices_para_calcular, 'comissao_emprestimo'] = comissao.fillna(0)
             base_calc.loc[indices_para_calcular, 'banco_emprestimo'] = config.get('banco')
             base_calc.loc[indices_para_calcular, 'prazo_emprestimo'] = config.get('parcelas')
-            base_calc.loc[indices_para_calcular, 'taxa_juros_emprestimo'] = config.get('taxa_juros_nominal', 0.0)
+            base_calc.loc[indices_para_calcular, 'taxa_nominal_emprestimo'] = config.get('taxa_juros_nominal', 0.0)
             base_calc.loc[indices_para_calcular, 'tratado'] = True
         return base_calc
     except Exception as e:
@@ -416,7 +416,7 @@ def _aplicar_regras_beneficio(base: pd.DataFrame, config: dict) -> pd.DataFrame:
             base_calc.loc[indices_para_calcular, 'comissao_beneficio'] = comissao.fillna(0)
             base_calc.loc[indices_para_calcular, 'banco_beneficio'] = config.get('banco')
             base_calc.loc[indices_para_calcular, 'prazo_beneficio'] = config.get('parcelas')
-            base_calc.loc[indices_para_calcular, 'taxa_juros_beneficio'] = config.get('taxa_juros_nominal', 0.0)
+            base_calc.loc[indices_para_calcular, 'taxa_nominal_beneficio'] = config.get('taxa_juros_nominal', 0.0)
             base_calc.loc[indices_para_calcular, 'tratado_beneficio'] = True
         return base_calc
     except Exception as e:
@@ -455,7 +455,7 @@ def _aplicar_regras_cartao(base: pd.DataFrame, config: dict) -> pd.DataFrame:
             base_calc.loc[indices_para_calcular, 'comissao_cartao'] = comissao.fillna(0)
             base_calc.loc[indices_para_calcular, 'banco_cartao'] = config.get('banco')
             base_calc.loc[indices_para_calcular, 'prazo_cartao'] = config.get('parcelas')
-            base_calc.loc[indices_para_calcular, 'taxa_juros_cartao'] = config.get('taxa_juros_nominal', 0.0)
+            base_calc.loc[indices_para_calcular, 'taxa_nominal_cartao'] = config.get('taxa_juros_nominal', 0.0)
             base_calc.loc[indices_para_calcular, 'tratado_cartao'] = True
         
         return base_calc
