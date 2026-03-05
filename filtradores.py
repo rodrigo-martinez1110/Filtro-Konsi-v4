@@ -199,19 +199,14 @@ def _preprocessar_base(df: pd.DataFrame, params: dict) -> pd.DataFrame:
         col_co = f'comissao_{prod}'
         col_ba = f'banco_{prod}'
         col_pr = f'prazo_{prod}'
+        col_tj = f'taxa_nominal_{prod}' # <-- Junte a variável aqui
+        
         if col_vl not in base.columns: base[col_vl] = 0.0
         if col_vp not in base.columns: base[col_vp] = 0.0
         if col_co not in base.columns: base[col_co] = 0.0
         if col_ba not in base.columns: base[col_ba] = ''
         if col_pr not in base.columns: base[col_pr] = 0
-        col_tj = f'taxa_nominal_{prod}'
-
-        if col_vl not in base.columns: base[col_vl] = 0.0
-        if col_vp not in base.columns: base[col_vp] = 0.0
-        if col_co not in base.columns: base[col_co] = 0.0
-        if col_ba not in base.columns: base[col_ba] = ''
-        if col_pr not in base.columns: base[col_pr] = 0
-        if col_tj not in base.columns: base[col_tj] = 0.0 # <-- FIM DA MODIFICAÇÃO
+        if col_tj not in base.columns: base[col_tj] = 0.0
         
     # Garante colunas GOVSP
     for col in ['MG_Beneficio_Saque_Total', 'MG_Beneficio_Saque_Disponivel', 'MG_Cartao_Total', 'MG_Cartao_Disponivel', 'Matricula']:
@@ -679,7 +674,7 @@ def _finalizar_base(df: pd.DataFrame, params: dict) -> pd.DataFrame:
     base.drop(columns=[col for col in colunas_para_remover if col in base.columns], inplace=True, errors='ignore')
 
     for prod in ['emprestimo', 'beneficio', 'cartao']:
-        for tipo in ['valor_liberado', 'valor_parcela', 'comissao']:
+        for tipo in ['valor_liberado', 'valor_parcela', 'comissao', 'taxa_nominal']:
             col = f'{tipo}_{prod}'
             if col in base.columns:
                 base[col] = pd.to_numeric(base[col], errors='coerce').fillna(0)
